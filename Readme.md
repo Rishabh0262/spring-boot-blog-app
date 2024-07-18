@@ -35,7 +35,7 @@ create .java files in entity package.
 @Data : [@Getter, @Setter, @RequiredArgsConstructor @ToString, @EqualsAndHashCode]  
 @AllArgsConstructor :  
 @NoArgsConstructor :  
-// JPA annotations to map over JPA entity with MySQL database table.  
+// JPA annotations to map over JPA entity with MySQL database(DB) table.  
 @Entity : to specify the class as Entity  
 @Table : to give a name to table  
 @Id : to specify primary key to our entity  
@@ -203,13 +203,97 @@ _ref. pic-get_post_by_id_rest-api_
    1.  @GetMapping("/{id}") : getPostById()
    2. return the response as ResponseEntity
 
+---
+
+## UPDATE post REST-API
+_ref. pic-update_post_rest-api_
+
+1. In PostService.java => we declare updatePost(long id) method
+
+2. in PostServiceImpl.java => @Override updatePost(long id) method
+   1. use PostRepository obj. for fetching the data.
+   2. postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+   3. use **return PostDto-obj**  ,  using the convert method.
+      to convert entity-to-DTO.
+
+3. In PostController.java
+   1.  @GetMapping("/{id}") : updatePost()
+   2. return the response as ResponseEntity
+
+---
+
+## DELETE post REST-API
+_ref. pic-delete_post_rest-api_
+
+1. In PostService.java => we declare "**void deletePost(long id)**" method
+
+2. in PostServiceImpl.java => @Override deletePost(long id) method
+   1. use PostRepository obj. for fetching the data.
+   2. Post _post_ = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+   3. use **postRepository.delete(_post_)**
+      this will delete an entity from DB(as if it has reference of it).
+
+3. In PostController.java
+   1.  @DeleteMaping("/{id}") : deletePost()
+   2. return a Msg as ResponseEntity
+
+
+## Pagination Support for GET all Posts REST-API : paging & sorting
+for URL : http://localhost:8080/api/posts?pageSize=5&pageNo=1
+
+1. PostController.java => we'll modify getAllPost()
+   1. getAllPosts(
+         @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+         @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
+      )
+2. PostService.java => Modify the same as getAllPosts(int pageNo, int pageSize)
+3. PostServiceImpl.java => Modify getAllPosts() as getAllPosts(int pageNo, int pageSize)
+   1. Pageable pageable = PageRequest.of(pageNo, pageSize);
+   2. pass **pageable** , in .findAll(_pageabel_), change the return-type to Page<Post>,
+   3. to get List<Post>, we'll use posts.getContent();
+   4. return the List<post> obj.
 
 
 
 
+Pagination requires :
+
+1. Payload => PostResponse.java  (+ @Data, @AllArgsConstructor)
+   1. private List<PostDto) content, int pageNo, int pageSize, long totalElements, totalPages, boolean last.
+   
+2. PostServiceImpl.java : contruct the response.
+   1. getAllPost(...)  returnType -> PostResponse
+   2. PostResponse obj. , map all its attributes from Page<Post> obj.(posts)
+   
+3. PostController.java : change the (getAllPosts) GetRequest's returntype 
 
 
+### sorting
+http://localhost:8080/api/posts?pageSize=5&pageNo=1&sortBy=title     (title/id/description/content)... any of the attributes can be used for sorting.
 
+1. PostController.java
+   1. Add another Req. Param. for the **sortBy**.
+   2. Add the sortBy var. as argument in _getAllposts(...)_
+
+2. PostService.java : include sortBy
+3. PostServiceImpl : inlcude sortBy-string in method args.
+   1. pass the 3rd parameter as Sort.by(...)  // Sort from "...data.domain", use ".by()" method having String as a passing arg.
+   2. Pageable pageable = PageRequest.of(pageNo, pageSize, **Sort.by(sortBy)**);
+   3. for DESC : **Sort.Order.desc()** OR **Sort.by(sortBy).descending()**
+   
+
+
+### Sorting in Desc. dynamically
+
+1. PostController.java
+   1. Add another Req. Param. for the **sortDir**.
+   2. Add the sortDir var. as argument in _getAllposts(...)_
+2. respective changes in _PostService.java_ & _PostServiceImpl.java_
+3. created a Sort obj. using ternary operator.
+
+
+## Defining all the Hardcoded values in util-pkg : AppConstant.java
+1. Defined Request_parameter values.
 
 
 
