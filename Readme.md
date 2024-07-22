@@ -36,7 +36,7 @@ create .java files in entity package.
 @AllArgsConstructor :  
 @NoArgsConstructor :  
 // JPA annotations to map over JPA entity with MySQL database(DB) table.  
-@Entity : to specify the class as Entity  
+@Entity : to specify the class as JPA Entity  
 @Table : to give a name to table  
 @Id : to specify primary key to our entity  
 @GeneratedValue : to specify primary key generation strategy.
@@ -295,6 +295,31 @@ http://localhost:8080/api/posts?pageSize=5&pageNo=1&sortBy=title     (title/id/d
 ## Defining all the Hardcoded values in util-pkg : AppConstant.java
 1. Defined Request_parameter values.
 
+
+## Sec. 9 : Building CRUD REST API's for Comment Resounrce (One to many)
+
+### Creating JPA Entity - Comment
+means DB-table creation.  
+
+1. entity-pkg : Comment.java 
+   1. id, name, email, body; @Data, @AllArgsConstructor, @NoArgsConstructor
+   2. @Entity, @Table(name = "comments")   :  create A table in DB
+   3. Inside class Comment 
+      1. @id, @GenratedValue(strategy = GenerationType.IDENTITY)
+      2. @Column(...) is not needed, as we are using the variable name as same as col. name.
+      4. To Mark **many-to-one** realtionship   for multiple Comments belong to 1 post.
+         1. **@ManyToOne**(fetch = FetchType.LAZY)           // create a bi-directional relationship b/w  (N)Comments & (1)Post.  
+         2. @JoinColumn(name = "post_id", nullable = false)  // _this way we have made the below "Post" obj. as "post_id as **Foreign key** in Comments table._  
+            **_private Post post;_**
+            1. FetchType.LAZY tells Hibernate to only fetch the related enetities from the DB when we use the relationship.
+
+2. entity-pkg : Post.java
+   1. use **@OneToMany** , means **1 post** has **many comments**
+   2. Arguments - 
+      1. mappedBy : "post"
+      2. cascade : CascadeType.ALL
+      3. orphanRemoval : true  // If post is deleted, associated comments will be deleted as well. 
+   3. private Set<Comment> comments = new HashSet<>();
 
 
 
