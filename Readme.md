@@ -69,12 +69,11 @@ create .java files in entity package.
       }
 ---
 ## Creating JPA repository for PostRepository
-####
-Create '.java' **interface** files in repository package.  
+#### Create '.java' **interface** files in repository package.  
 
 all we need to do is **_Extend the interface with JpaRepository<Post, Long>_**  
 ##### Note : we don't need to use @Repository here, bcz **JpaRepository** > SimpleJpaRepository > @Repository & @Transactional ... internally as it all
-      interface RepositoryName extends JpaRepository<Table-name/Entity-name, Long> {
+      interface RepositoryName extends JpaRepository<Table-name/Entity-name, typeof_primary-key> {    // type of entity we want to use(i.e, Post) , type of etity's primary-key 
 
          //    We don't need to write any code here.
          // JpaRepository<Post, Long> impicitly has all the required code 
@@ -173,7 +172,7 @@ _ref. pic-5_create_post_rest-api_
 
 
 ## GET All posts REST-API
-_ref. pic-get_all_posts_rest-api_
+_ref. pic-6-get_all_posts_rest-api_
 
 First we'll go to service layer, then we'll go to controller layer.
 
@@ -189,7 +188,7 @@ First we'll go to service layer, then we'll go to controller layer.
 ---
 
 ## GET post by ID REST-API
-_ref. pic-get_post_by_id_rest-api_
+_ref. pic-7-get_post_by_id_rest-api_
 
 1. In PostService.java => we declare getPostByID(long id) method
 
@@ -206,7 +205,7 @@ _ref. pic-get_post_by_id_rest-api_
 ---
 
 ## UPDATE post REST-API
-_ref. pic-update_post_rest-api_
+_ref. pic-8-update_post_rest-api_
 
 1. In PostService.java => we declare updatePost(long id) method
 
@@ -223,7 +222,7 @@ _ref. pic-update_post_rest-api_
 ---
 
 ## DELETE post REST-API
-_ref. pic-delete_post_rest-api_
+_ref. pic-9-delete_post_rest-api_
 
 1. In PostService.java => we declare "**void deletePost(long id)**" method
 
@@ -239,6 +238,7 @@ _ref. pic-delete_post_rest-api_
 
 
 ## Pagination Support for GET all Posts REST-API : paging & sorting
+_ref. pic-10-pagination_get-all-post_rest-api_
 for URL : http://localhost:8080/api/posts?pageSize=5&pageNo=1
 
 1. PostController.java => we'll modify getAllPost()
@@ -321,12 +321,41 @@ means DB-table creation.
       3. orphanRemoval : true  // If post is deleted, associated comments will be deleted as well. 
    3. private Set<Comment> comments = new HashSet<>();
 
+### Creating JPA Repository - CommentRepository
+#### Create '.java' **interface** files in repository package.
+
+`for more details, refer Post-entity's JPA-Repository`
+
+1. repository pkg : 
+   1. Create CommentRepository.java _interface_
+   2. Extends **JpaRepository** : access to all the CRUD methods for Comment-entity
+      1. All the SQL query methods.
+      2. Paging & sorting
+      3. CRUD methods : CrudRepository
 
 
 
+### Creating DTO class - CommentDto
+
+1. payload pkg : 
+   1. CommentDto class
+      1. long id;
+      2. String name,email, body;
 
 
 
+---
+
+## Create Comment REST-API
+_ref. pic-5_create_comment_rest-api_
+
+1. pkg service
+   1. CommentService - interface
+   2. 
+2. service/impl 
+   1. CommentServiceImpl-class : 
+      1. Created a CommentRepository - obj. 
+      2. Generate a Constructor of it. **can Omit @Autowired** as this class has only one data member/var.
 
 
 
