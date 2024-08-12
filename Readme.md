@@ -7,6 +7,9 @@ automatically create the data source & it will refer the **MySQL database proper
 
 **[postman-Client]** <-------_(GET, POST, PUT, DELETE)_------> **[CONTROLLER(api-layer)]** <----------> **[SERVICE(business-logic)]** <--------> **[DAO-repository(persistence-logic)]** <-------_(JDBC Driver & URL, Username, password)_------> **[DB]**
 
+## Annotations
+@RequestBody : Converts the request JSON obj into Java obj.
+
 
 
 
@@ -81,8 +84,8 @@ all we need to do is **_Extend the interface with JpaRepository<Post, Long>_**
       }
 ---
 
-## Creating custom expecptions
-before creating REST-API for our Post-resource, we will create custom expecptions 
+## Creating custom exceptions
+before creating REST-API for our Post-resource, we will create custom exceptions 
 
 ### ResourceNotFoundException
 
@@ -91,7 +94,7 @@ Create a ResourceNotFoundException.java in exception package.  refer the file...
 extent it to **RuntimeException**
 
 
-##### @ResonseStatus 
+##### @ResponseStatus 
 // this cause SB to respond with the specified HTTP status code whenever this exception is thrown from the controller.
       
 Inside **ResourceNotFoundException-constructor**, we've used **_super_** keyword  
@@ -144,11 +147,13 @@ helps in hiding implementation details of JPA entities.
 [res. to postman] => DTO -> json  
 
 ---
-
+## CRUD
+### Annotations : @PostMapping, @GetMapping, @PutMapping, @DeleteMapping
+respectively
 
 ## Create post REST-API
 _ref. pic-5_create_post_rest-api_
-
+#### service-pkg
 1. create an **interface** _PostService.java_, in _**service**_ (parallel to "impl" package).  
 **ref.** : service/PostService.java  
 
@@ -161,14 +166,15 @@ _ref. pic-5_create_post_rest-api_
       1. Convert DTO to entity.
       2. Save newly created entity(from above).
       3. Convert entity to DTO.
-   
+      
+#### Controller-pkg
 3. Create a **controller** for Post.
    1. Create a respective-service object. Like here, PostService - bcz we need to use the postService.createPost().
    2. constructor generation.
       1. **NOTE:** If you are configuring a class as a Spring-bean &  it has only 1 constructor.
          then @Autowired is not required.
    3. @PostMapping  
-   **ref.** : post 
+   **ref.** : PostController.java
 
 
 ## GET All posts REST-API
@@ -296,6 +302,16 @@ http://localhost:8080/api/posts?pageSize=5&pageNo=1&sortBy=title     (title/id/d
 1. Defined Request_parameter values.
 
 
+
+
+
+-----
+
+
+
+
+
+
 ## Sec. 9 : Building CRUD REST API's for Comment Resounrce (One to many)
 
 ### Creating JPA Entity - Comment
@@ -346,7 +362,7 @@ means DB-table creation.
 
 ---
 
-## Create Comment REST-API
+### Create Comment REST-API : service
 _ref. pic-5_create_comment_rest-api_
 
 1. pkg service
@@ -356,21 +372,101 @@ _ref. pic-5_create_comment_rest-api_
    1. CommentServiceImpl-class : 
       1. Created a CommentRepository - obj. 
       2. Generate a Constructor of it. **can Omit @Autowired** as this class has only one data member/var.
+      3. Entity-to-DTO & DTO-to-entity functions for mapping.
+      4. retrieve _post-entity_ by ID.
+         1. For which, we need to use created PostRepository-obj as well.
+         2. Include it into Constructor as well.
+         3. fetch the post by ID. using the post-repo-obj
+      5. Set post to comment entity.
+      6. Save Comment-entity to DB.
+
+##### Ref. : Controller-pkg line of [Create Post REST-API]
+3. contoller-pkg
+   1. CommentController-class
+      1. Obj. of CommentService is created.
+      2. Constructor with agr is created with the same.
+      3. Now follow the REST-API Mapping routine.
+      4. 
 
 
+---
+
+## Get all comments by post
+
+1. repository : create custom query method to fetch post-by-id.
+`List<Comment> findByPostId(long id);`
+
+2. service, serviceImpl : 
+   1.create the required method declaration.
+   2. Implement the method in Impl.
+      1. used the custom repo. method[findByPostId] to get the 
+
+3. controller : 
 
 
+---
 
+## Get comment by ID
 
+1. serice, serviceImpl
+   1. Impl => we'll use _BlogAPIException_  if **comment's=>post_id != postID**
 
+#### BlogAPIException 
+We throw this exception whenever we write some business logic or validate request parameter.
 
-
-
-
+2. exception-pkg : BlogAPIException _extends_ RuntimeException
+   1. vars : HttpStatus-> status, string-> msg
+   2. Generate respective : getters, constructors with all Args(), with all Args(string)
+      1. choosing 2 superclass constructor... : with no args, with 1 msg Args.
+3. 
 
 
 
 ---  
+
+## Update comment by ID
+1. serice, serviceImpl
+
+2. Fetched both, comment & post from DB using IDs
+3. change the  values of current comment using setter with the passed values.
+4. commentRepo's .save()    & this method will send the updated Response.
+5. return the new updated commment.
+6. 
+
+---
+
+## Delete comment by ID
+
+Similar step.  
+except we'll use commentRepo.delete(commentEntity);
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---  
 
