@@ -1,15 +1,15 @@
 package com.gtech.springboot_blog_rest_api.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.yaml.snakeyaml.tokens.CommentToken;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+//@Data     //  showed some error in  sec-10, 3rd part , as toString() is causing stackoverflowError... restricting Set<CommentDto> attribute to have its values from RDBMS
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

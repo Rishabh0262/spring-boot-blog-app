@@ -8,6 +8,7 @@ import com.gtech.springboot_blog_rest_api.payload.CommentDto;
 import com.gtech.springboot_blog_rest_api.repository.CommentRepository;
 import com.gtech.springboot_blog_rest_api.repository.PostRepository;
 import com.gtech.springboot_blog_rest_api.service.CommentService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,13 @@ import java.util.stream.Collectors;
 public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
     private PostRepository postRepository;
+    private ModelMapper modelMapper;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository, ModelMapper modelMapper) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -98,18 +101,22 @@ public class CommentServiceImpl implements CommentService {
 
     //    entity => DTO : constructor can be used, probably.
     private CommentDto mapToDto(Comment comment) {
-        CommentDto commentDto = new CommentDto();
-        commentDto.setId(comment.getId());
-        commentDto.setName(comment.getName());
-        commentDto.setBody(comment.getBody());
-        commentDto.setEmail(comment.getEmail());
+
+        CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
+
+//        CommentDto commentDto = new CommentDto();
+//        commentDto.setId(comment.getId());
+//        commentDto.setName(comment.getName());
+//        commentDto.setBody(comment.getBody());
+//        commentDto.setEmail(comment.getEmail());
 
         return commentDto;
     }
 
 //    DTO => entity : we should use proper individual mapping. (OR maybe this could work)
     private Comment mapToEntity(CommentDto commentDto) {
-        Comment comment = new Comment(commentDto.getId(), commentDto.getName(), commentDto.getEmail(), commentDto.getBody() , null);
+        Comment comment = modelMapper.map(commentDto, Comment.class);
+//        Comment comment = new Comment(commentDto.getId(), commentDto.getName(), commentDto.getEmail(), commentDto.getBody() , null);
 
         return comment;
     }

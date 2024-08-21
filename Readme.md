@@ -455,7 +455,7 @@ Google : "model mapper maven" => latest release => **Copy** Maven code. paste it
    1. Service-Impl : ModelMapper-obj
    2. Use it in the service-constructor, just like we create all-args-constructor. [constructor based dependency-injection]
    3. E.g. : We need to convert PostDto => Post, using mapToEntity().
-      4. post = **mapper.map(postDto, Post.class);**      // choosing : .map(obj src, obj dest.)
+      4. post = **mapper.map(postDto, _Post.class_);**      // choosing : .map(_obj src_, _obj dest._)
       5. This way we won't be needing to write a mapping part of each attribute.
 
 
@@ -464,9 +464,19 @@ Google : "model mapper maven" => latest release => **Copy** Maven code. paste it
 
 ### Map Comment Entity to Comment DTO using ModelMapper
 
+1. CommentServiceImpl : 
+   1. ModelMapper-obj
+   2. use it in the service-constructor(refer above 3.2)
+   3. 
+
 ### Refactoring GetPostById & GetAllPosts REST API
+      to get post along with it comments.
 
-
+1. PostDto.java : add an attribute i.e,
+2. private Set<CommentDto> comments;
+3. Post.java : as toString() is causing stackoverflowError... restricting Set<CommentDto> attribute to have its values from RDBMS
+   1. remove @data, add @Setter & @Getter
+   2. ModelMapper internally use toString() for mapping, it caused _INFINITE LOOP_  when mapping Post <=> PostDto
 
 
 
