@@ -443,6 +443,31 @@ except we'll use commentRepo.delete(commentEntity);
 ---
 
 
+## Section 10 : Using ModelMapper - Map Entity to DTO and Vice-versa
+      it helps in mapping from 1 obj. to another obj. automatically.
+Google : "model mapper maven" => latest release => **Copy** Maven code. paste it into POM.xml
+1. Add ModelMapper Library dependency.
+2. Define the ModelMapper Bean in our Spring Config.
+   1. SpringBootBlogRestApiApplication.java -> 
+      1. ModelMapper **@Bean**  : returns a ModelMapper-obj.
+      
+3. Inject & use ModelMapper : to convert 1 object to another object. (e.g, DTO <-> Entity)
+   1. Service-Impl : ModelMapper-obj
+   2. Use it in the service-constructor, just like we create all-args-constructor. [constructor based dependency-injection]
+   3. E.g. : We need to convert PostDto => Post, using mapToEntity().
+      4. post = **mapper.map(postDto, Post.class);**      // choosing : .map(obj src, obj dest.)
+      5. This way we won't be needing to write a mapping part of each attribute.
+
+
+### Map Post Entity to Post DTO using ModelMapper
+
+
+### Map Comment Entity to Comment DTO using ModelMapper
+
+### Refactoring GetPostById & GetAllPosts REST API
+
+
+
 
 
 

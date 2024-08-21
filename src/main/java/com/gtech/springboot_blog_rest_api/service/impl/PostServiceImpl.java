@@ -6,6 +6,7 @@ import com.gtech.springboot_blog_rest_api.payload.PostDto;
 import com.gtech.springboot_blog_rest_api.payload.PostResponse;
 import com.gtech.springboot_blog_rest_api.repository.PostRepository;
 import com.gtech.springboot_blog_rest_api.service.PostService;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +21,11 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
 
-    public PostServiceImpl(PostRepository postRepository) {
+    private ModelMapper mapper;
+
+    public PostServiceImpl(PostRepository postRepository, ModelMapper mapper) {
         this.postRepository = postRepository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -131,24 +135,29 @@ public class PostServiceImpl implements PostService {
 
     //    Method to convert entity to DTO
     private Post mapToEntity(PostDto postDto) {
-        Post post = new Post();
 
-        post.setId(postDto.getId());
-        post.setTitle(postDto.getTitle());
-        post.setDescription(postDto.getDescription());
-        post.setContent(postDto.getContent());
+        Post post = mapper.map(postDto, Post.class);
+
+//        Post post = new Post();
+//
+//        post.setId(postDto.getId());
+//        post.setTitle(postDto.getTitle());
+//        post.setDescription(postDto.getDescription());
+//        post.setContent(postDto.getContent());
 
         return post;
     }
 
 //    Method to convert DTO to entity
     private PostDto mapToDTO(Post post) {
-        PostDto postDto = new PostDto();
-
-        postDto.setId(post.getId());
-        postDto.setTitle(post.getTitle());
-        postDto.setDescription(post.getDescription());
-        postDto.setContent(post.getContent());
+        PostDto postDto = mapper.map(post, PostDto.class);
+        
+//        PostDto postDto = new PostDto();
+//
+//        postDto.setId(post.getId());
+//        postDto.setTitle(post.getTitle());
+//        postDto.setDescription(post.getDescription());
+//        postDto.setContent(post.getContent());
 
         return postDto;
     }
