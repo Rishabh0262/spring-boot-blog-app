@@ -474,21 +474,52 @@ Google : "model mapper maven" => latest release => **Copy** Maven code. paste it
 
 1. PostDto.java : add an attribute i.e,
 2. private Set<CommentDto> comments;
+`It should've return the post along with its comments.`
 3. Post.java : as toString() is causing stackoverflowError... restricting Set<CommentDto> attribute to have its values from RDBMS
    1. remove @data, add @Setter & @Getter
    2. ModelMapper internally use toString() for mapping, it caused _INFINITE LOOP_  when mapping Post <=> PostDto
 
 
 
+## Section 12 : Exception Handling in SB project
+`Check for the  Pic.`
+
+### Specific or custom Error Handling
+#### Development Process
+* Create ErrorDetails Class
+* Create GlobalExceptionHandler Class
+* Test using Postman Client
+
+1. **Payload-pkg** : _ErrorDetails.java_
+   1. Specify all the fields related to error. E.g,  **Date(when exception occur), msg, details** 
+   2. create constructor + getter manually (using IDE shortcut, not by @annotation)
+
+2. **Exception-pkg** : _GlobalExceptionHandler.java_
+   1. @ControllerAdvice
+      1. @ExceptionHandler(<specificExceptionName>.class)
+      2. ref. the .java file.
 
 
+**_Global-Exception will handle all the exception, except those 2 ResourceNotFound & BlogAPIException_**
+   1. Within the same class where we used @ControllerAdvice
+      1. @ExceptionHandler(Exception.class) is used for generic type ExceptionErrorDetails.
 
 
+Since, previously it was showing **MethodArgumentTypeMismatchException**. with a default long msg as the API response with unnecessary details.  
+Now, it's showing the desired format.
 
 
+## Sec. 13 : REST API Validation
+E.g. : Title, description, content... are some of the Non-null/non-empty values. That's why we need to apply validations for these values.
+#### @BeanValidation
+
+##### Development Process
+1. Add maven dependency **spring-boo-starter_validation**
+2. Apply validation annotation to a PostDto bean
+### Validate Create Post REST API Request
 
 
-
+### Validate Update Post REST API Request
 
 
 
