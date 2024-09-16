@@ -12,7 +12,6 @@ automatically create the data source & it will refer the **MySQL database proper
 
 
 
-
 #### Create Controller package
 src/main/java/com.gtech. ... _api/ => 
 1. "**contorller**" : spring MVC Controller classes.
@@ -511,17 +510,46 @@ Now, it's showing the desired format.
 
 ## Sec. 13 : REST API Validation
 E.g. : Title, description, content... are some of the Non-null/non-empty values. That's why we need to apply validations for these values.
-#### @BeanValidation
+# @BeanValidation
 
 ##### Development Process
 1. Add maven dependency **spring-boo-starter_validation**
-2. Apply validation annotation to a PostDto bean
-### Validate Create Post REST API Request
+2. Apply validation annotation to a PostDto bean.
+   e.g. **@NotNull**, **@NotBlank** and **@RequestBody**
+3. Enable validation on Spring Rest Controller by adding **@Valid** in addition to **@RequestBody**
+4. To customize response validation we need to extend **ResponseEntityExceptionHandler** class & override **handleMethodArgumentNotValid(MethodArgumentNotValidException  ex, HttpHeaders headers, httpStatus status, WebRequest req)** method
 
+
+### Validate Create Post REST API Request
+after following above steps. API isn't responding error in proper format in postman.
+`{
+"timestamp": "2024-09-16T20:09:31.873+00:00",
+"message": "Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.gtech.springboot_blog_rest_api.payload.PostDto> com.gtech.springboot_blog_rest_api.controller.PostController.createPost(com.gtech.springboot_blog_rest_api.payload.PostDto) 
+   with 2 errors: [Field error in object 'postDto' on field 'title': rejected value [a]; 
+   codes [Size.postDto.title,Size.title,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [postDto.title,title]; arguments []; 
+      default message [title],2147483647,2]; 
+      default message [ Post title should have atleast 2 characters]] [Field error in object 'postDto' on field 'description': rejected value [validtest]; codes [Size.postDto.description,Size.description,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [postDto.description,description]; arguments []; 
+      default message [description],2147483647,10]; 
+      default message [Post description should have at least 10 characters]] ",
+"details": "uri=/api/posts"
+}`
+
+#### Approach 1
+1. Customizing Validation Response
+   1. pkg. exception : GlobalExceptionHandler.java
+      1. extends ResponseEntityExceptionHandler
+      2. overide **handleMethodArgumentNotValid** at the bottom.
+         1. TRICK : _paste_ the method name to be _overridden_. 
+         2. Ctrl + space
+      3. _refer code through overridden method._
 
 ### Validate Update Post REST API Request
-
-
+Same resolution
+#### Approach 2
+1. using **@ExceptionHandler()**
+   1. pkg. exception : GlobalExceptionHandler.java
+      1. copy paste one of the above handlers & edit it with the reference
+      
 
 
 
